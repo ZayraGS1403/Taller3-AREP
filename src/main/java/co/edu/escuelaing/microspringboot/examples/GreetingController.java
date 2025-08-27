@@ -1,6 +1,7 @@
 package co.edu.escuelaing.microspringboot.examples;
 
 import co.edu.escuelaing.microspringboot.annotations.GetMapping;
+import co.edu.escuelaing.microspringboot.annotations.RequestParam;
 import co.edu.escuelaing.microspringboot.annotations.RestController;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -11,7 +12,7 @@ public class GreetingController {
 	private final AtomicLong counter = new AtomicLong();
 
 	@GetMapping("/greeting")
-	public static String greeting() {
-		return "hello world";
+	public static String greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
+		return "Hola " + name;
 	}
 }

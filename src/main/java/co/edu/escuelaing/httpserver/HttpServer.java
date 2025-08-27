@@ -1,6 +1,8 @@
+
 package co.edu.escuelaing.httpserver;
 
 import co.edu.escuelaing.microspringboot.annotations.GetMapping;
+import co.edu.escuelaing.microspringboot.annotations.RequestParam;
 import co.edu.escuelaing.microspringboot.annotations.RestController;
 import java.net.*;
 import java.io.*;
@@ -8,6 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+
 
 public class HttpServer {
 
@@ -101,9 +104,16 @@ public class HttpServer {
             HttpResponse res = new HttpResponse();
             String servicePath = requri.getPath().substring(4);
             Method m = services.get(servicePath);
-            return header + m.invoke(null);
-        
             
+            String[] argsValues = null;
+            RequestParam rp = (RequestParam) m.getParameterAnnotations()[0][0];
+            if (requri.getQuery()== null){
+                argsValues = new String[]{rp.defaultValue()};
+            }else{
+                String queryParamName = rp.value();
+                argsValues = new String[]{req.getValue(queryParamName)};
+            }
+            return header + m.invoke(null, argsValues);  
         }catch(InvocationTargetException ex){
             System.out.println("erro2");
         }

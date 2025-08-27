@@ -1,8 +1,8 @@
-# Microframeworks WEB (Taller 2 AREP)
+# Microframeworks WEB (Taller 3 AREP)
 
 Un framework de servidor HTTP implementado en Java que permite el desarrollo de aplicaciones web con servicios REST backend. Este proyecto convierte un servidor HTTP básico en un framework completo que soporta la definición de servicios REST usando funciones lambda, manejo de parámetros de consulta y especificación de ubicación de archivos estáticos.
 
-## Nuevas Funcionalidades del Taller 2
+## Nuevas Funcionalidades del Taller 3
 
 ### 1. Método GET Estático para Servicios REST
 Implementa un método `get()` que permite a los desarrolladores definir servicios REST usando funciones lambda.
