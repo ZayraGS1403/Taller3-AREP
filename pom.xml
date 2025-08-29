@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.mycompany</groupId>
+    <groupId>co.edu.escuelaing</groupId>
     <artifactId>httpserver</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -13,7 +13,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <exec.mainClass>com.mycompany.httpserver.webaplication.WebAplication</exec.mainClass>
+        <exec.mainClass>co.edu.escuelaing.microspringboot.MicroSpringBoot</exec.mainClass>
         <junit.version>5.10.0</junit.version>
     </properties>
 

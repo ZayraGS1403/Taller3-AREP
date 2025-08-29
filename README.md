@@ -1,225 +1,145 @@
-# Microframeworks WEB (Taller 3 AREP)
+# Servidor Web con Framework IoC (Taller 3 AREP)
 
-Un framework de servidor HTTP implementado en Java que permite el desarrollo de aplicaciones web con servicios REST backend. Este proyecto convierte un servidor HTTP básico en un framework completo que soporta la definición de servicios REST usando funciones lambda, manejo de parámetros de consulta y especificación de ubicación de archivos estáticos.
+Un servidor web implementado en Java que incluye un framework de Inversión de Control (IoC) para la construcción de aplicaciones web a partir de POJOs. El servidor es capaz de entregar páginas HTML e imágenes PNG, además de proveer servicios REST utilizando anotaciones similares a Spring Boot.
 
-## Nuevas Funcionalidades del Taller 3
+## Descripción
 
-### 1. Método GET Estático para Servicios REST
-Implementa un método `get()` que permite a los desarrolladores definir servicios REST usando funciones lambda.
+ El servidor debe ser capaz de entregar páginas html e imágenes tipo PNG. Igualmente el servidor debe proveer un framework IoC para la construcción de aplicaciones web a partir de POJOS. Usando el servidor se debe construir una aplicación Web de ejemplo. El servidor debe atender múltiples solicitudes no concurrentes.
 
-**Ejemplo de uso:**
-```java
-get("/hello", (req, res) -> "hello world!");
-```
+Para este taller desarrolle un prototipo mínimo que demuestre las capacidades reflexivas de JAVA y permita por lo menos cargar un bean (POJO) y derivar una aplicación Web a partir de él.
 
-Esta funcionalidad permite a los desarrolladores definir rutas simples y claras dentro de sus aplicaciones, mapeando URLs a expresiones lambda específicas que manejan las peticiones y respuestas.
+## Características Principales
 
-### 2. Mecanismo de Extracción de Valores de Consulta
-Desarrolla un mecanismo para extraer parámetros de consulta de las peticiones entrantes y hacerlos accesibles dentro de los servicios REST.
+- **Servidor HTTP**: Implementación desde cero usando sockets Java
+- **Framework IoC**: Sistema de inversión de control para cargar y gestionar POJOs
+- **Capacidades reflexivas**: Uso de reflexión para descubrir y cargar componentes automáticamente
+- **Anotaciones**: Soporte para `@RestController`, `@GetMapping` y `@RequestParam`
+- **Servicio de archivos estáticos**: HTML, CSS, JavaScript, imágenes PNG
+- **Arquitectura modular**: Separación de responsabilidades en diferentes clases
 
-**Ejemplo de uso:**
-```java
-get("/hello", (req, res) -> "hello " + req.getValue("name"));
-```
+## Funcionalidades Implementadas
 
-Esta funcionalidad facilita la creación de servicios REST dinámicos y parametrizados, permitiendo a los desarrolladores acceder y utilizar fácilmente los parámetros de consulta dentro de sus implementaciones de servicios.
+### 1. Framework MicroSpringBoot
 
-### 3. Especificación de Ubicación de Archivos Estáticos
-Introduce un método `staticfiles()` que permite a los desarrolladores definir la carpeta donde se ubican los archivos estáticos.
+El framework principal `MicroSpringBoot` implementa:
+- Carga de POJOs desde línea de comandos
+- Exploración automática del classpath para encontrar clases con `@RestController`
+- Procesamiento de anotaciones `@GetMapping` y `@RequestParam`
+- Gestión de servicios REST con tipos de retorno String
 
-**Ejemplo de uso:**
-```java
-staticfiles("webroot/public");
-```
+### 2. Anotaciones Soportadas
 
-La función `staticfiles()` establece el nuevo directorio donde se servirán los archivos estáticos. Esta función automáticamente:
-- Crea el directorio especificado en `target/classes/[ruta-especificada]/`
-- Copia todos los archivos estáticos existentes desde `src/main/java/resorces/` a la nueva ruta establecida por el desarrollador
-- Permite que el desarrollador pueda añadir o modificar más archivos estáticos en la nueva ubicación
-
-El framework buscará archivos estáticos en el directorio especificado, como `target/classes/webroot/public`, facilitando a los desarrolladores la organización y gestión de los recursos estáticos de su aplicación.
-
-### Ejemplo de Uso del Nuevo Framework
+#### @RestController
+Marca una clase como controlador REST que debe ser gestionado por el framework:
 
 ```java
-public class WebApplication {
-    public static void main(String[] args) {
-        staticfiles("/webroot");
-        get("/hello", (req, resp) -> "Hello " + req.getValue("name"));
-        get("/pi", (req, resp) -> {
-            return String.valueOf(Math.PI); 
-        });
+@RestController
+public class HelloController {
+    @GetMapping("/")
+    public String index() {
+        return "Greetings from Spring Boot!";
     }
 }
 ```
 
-Este código simple iniciará un servidor web y servirá una aplicación web con archivos estáticos ubicados en "target/classes/webroot". Los servicios REST GET responderán a las siguientes peticiones:
+#### @GetMapping
+Define un endpoint HTTP GET en la URI especificada:
 
-- `http://localhost:35000/App/hello?name=Pedro`
-- `http://localhost:35000/App/pi`
-
-El código también responde a peticiones de archivos estáticos:
-- `http://localhost:35000/index.html`
-
-En el ejemplo, los servicios REST se publican con el prefijo "/App".
-
-
-## Características principales
-
-- **Framework de servidor HTTP**: Implementación desde cero usando sockets Java convertida en framework completo
-- **Servicios REST con Lambdas**: Definición de servicios usando expresiones lambda para mayor simplicidad
-- **Extracción de parámetros de consulta**: Mecanismo automático para acceder a parámetros URL
-- **Gestión flexible de archivos estáticos**: Configuración personalizable de ubicación de recursos estáticos
-- **Servicio de archivos estáticos**: HTML, CSS, JavaScript, imágenes
-- **Manejo de formularios**: Soporte para métodos GET y POST
-- **Múltiples tipos MIME**: Detección automática del tipo de contenido
-- **Arquitectura modular**: Separación de responsabilidades en diferentes clases
-
-## Estructura del proyecto
-
-```
-httpserver/
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── com/mycompany/httpserver/
-│   │   │       ├── HttpServer.java      # Servidor principal con nuevas funcionalidades
-│   │   │       ├── HttpRequest.java     # Manejo de peticiones con extracción de parámetros
-│   │   │       ├── HttpResponse.java    # Manejo de respuestas
-│   │   │       ├── Service.java         # Interfaz para servicios REST
-│   │   │       └── webaplication/
-│   │   │           └── WebApplication.java # Ejemplo de uso del framework
-│   │   └── resorces/                    # Archivos estáticos originales
-│   │       ├── index.html
-│   │       ├── styles/style.css
-│   │       ├── scripts/script.js
-│   │       └── images/
-│   └── test/
-│       └── java/
-│           └── com/mycompany/httpserver/
-│               └── HttpServerTest.java  # Pruebas unitarias completas                        
-├── target/
-│   └── classes/                         # Archivos compilados y recursos copiados
-├── pom.xml                              
-└── README.md
+```java
+@GetMapping("/greeting")
+public String greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
+    return "Hola " + name;
+}
 ```
 
-## Pruebas Implementadas
+#### @RequestParam
+Permite extraer parámetros de la URL con valores por defecto:
 
-El proyecto incluye pruebas unitarias completas que verifican:
+```java
+@RequestParam(value = "name", defaultValue = "World") String name
+```
 
-### Pruebas de Funcionalidades Básicas:
-- Existencia y integridad de archivos estáticos
-- Estructura correcta de directorios
-- Manejo de diferentes tipos de archivos (HTML, CSS, JS, imágenes)
-- Formato de cabeceras HTTP
-- Respuestas de error 404
+### 3. Ejemplo de Controlador Completo
 
-### Pruebas de Nuevas Funcionalidades del Taller 2:
-- **Método get()**: Registro de servicios REST con funciones lambda
-- **Extracción de parámetros**: Método `getValue()` con diferentes escenarios:
-  - Parámetros simples y múltiples
-  - Parámetros vacíos y inexistentes
-  - URIs sin query string
-  - Caracteres especiales en parámetros
-- **Método staticfiles()**: 
-  - Creación automática de directorios
-  - Copia de archivos estáticos originales
-  - Manejo de rutas relativas y absolutas
-- **Integración completa**: Ejecución de servicios con parámetros
+```java
+@RestController
+public class GreetingController {
+    private static final String template = "Hello, %s!";
+    private final AtomicLong counter = new AtomicLong();
 
-### Ejecutar las pruebas:
+    @GetMapping("/greeting")
+    public String greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
+        return "Hola " + name;
+    }
+}
+```
+
+## Estructura del Proyecto
+
+```
+src/
+├── main/
+│   ├── java/
+│   │   └── co/edu/escuelaing/
+│   │       ├── httpserver/
+│   │       │   ├── HttpServer.java      # Servidor HTTP principal
+│   │       │   ├── HttpRequest.java     # Manejo de peticiones HTTP
+│   │       │   └── HttpResponse.java    # Manejo de respuestas HTTP
+│   │       └── microspringboot/
+│   │           ├── MicroSpringBoot.java # Framework IoC principal
+│   │           ├── annotations/
+│   │           │   ├── GetMapping.java      # Anotación para mapeo GET
+│   │           │   ├── RequestParam.java    # Anotación para parámetros
+│   │           │   └── RestController.java  # Anotación para controladores
+│   │           └── examples/
+│   │               └── GreetingController.java # Ejemplo de controlador
+│   └── resources/
+│       ├── index.html               # Página principal
+│       ├── images/                  # Imágenes PNG
+│       ├── scripts/                 # JavaScript
+│       └── styles/                  # CSS
+└── test/
+    └── java/                        # Pruebas unitarias
+```
+
+## Cómo Ejecutar el Proyecto
+
+### 1. Compilar el proyecto
 ```bash
-mvn test
+mvn clean compile
+```
+
+### 2. Ejecutar con POJO específico (Versión inicial)
+```bash
+java -cp target/classes co.edu.escuelaing.microspringboot.MicroSpringBoot co.edu.escuelaing.microspringboot.examples.GreetingController
+```
+
+### 3. Ejecutar con exploración automática (Versión final)
+```bash
+java -cp target/classes co.edu.escuelaing.microspringboot.MicroSpringBoot
 ```
 
 ## Ejemplos de Uso
 
-### Definir Servicios REST:
-```java
-// Servicio simple
-get("/hello", (req, resp) -> "Hello World!");
+### URLs de Prueba:
 
-// Servicio con parámetros
-get("/greet", (req, resp) -> "Hello " + req.getValue("name"));
-
-// Servicio con lógica compleja
-get("/calculate", (req, resp) -> {
-    int a = Integer.parseInt(req.getValue("a"));
-    int b = Integer.parseInt(req.getValue("b"));
-    return String.valueOf(a + b);
-});
-```
-
-### Configurar Archivos Estáticos:
-```java
-// Configurar directorio de archivos estáticos
-staticfiles("/public");        // Relativo: target/classes/public/
-staticfiles("/assets/web");    // Absoluto: target/classes/assets/web/
-```
-
-### URLs de Ejemplo:
-- `http://localhost:35000/App/hello`
-- `http://localhost:35000/App/greet?name=Pedro`
-- `http://localhost:35000/App/calculate?a=5&b=3`
-- `http://localhost:35000/index.html` 
-
-## Cómo Ejecutar el Proyecto
-
-### Ejecutar el servidor:
-```bash
-mvn clean compile exec:java
-```
-
-### Probar las funcionalidades:
-
-1. **Archivo estático (index.html):**
+1. **Servicio con parámetro:**
    ```
-   http://localhost:35000/
+   http://localhost:35000/greeting?name=Pedro
+   ```
+   Respuesta: "Hola Pedro"
+
+2. **Servicio con valor por defecto:**
+   ```
+   http://localhost:35000/greeting
+   ```
+   Respuesta: "Hola World"
+
+3. **Archivos estáticos:**
+   ```
    http://localhost:35000/index.html
+   http://localhost:35000/images/favicon.ico
    ```
-
-2. **Servicio REST con parámetros:**
-   ```
-   http://localhost:35000/app/hello?name=Pedro
-   ```
-   Respuesta esperada: "Hello Pedro"
-
-3. **Servicio REST sin parámetros:**
-   ```
-   http://localhost:35000/app/pi
-   ```
-   Respuesta esperada: "3.141592653589793"
-
-4. **Archivos estáticos desde nueva ubicación:**
-   Los archivos se copian automáticamente a `target/classes/webroot/public/` y se sirven desde allí.
-
-## Arquitectura de la Solución
-
-### Componentes Principales:
-
-1. **HttpServer**: Servidor principal que maneja:
-   - Registro de servicios REST con el método `get()`
-   - Configuración de archivos estáticos con `staticfiles()`
-   - Ruteo de peticiones HTTP
-   - Respuesta a diferentes tipos de archivos
-
-2. **HttpRequest**: Maneja las peticiones entrantes:
-   - Extrae parámetros de consulta con `getValue()`
-   - Parsea URIs y query strings
-   - Proporciona acceso a datos de la petición
-
-3. **Service**: Interfaz funcional que permite:
-   - Definición de servicios usando lambdas
-   - Procesamiento de peticiones y respuestas
-   - Lógica de negocio personalizada
-
-4. **WebApplication**: Ejemplo de implementación que demuestra:
-   - Configuración del framework
-   - Definición de servicios REST
-   - Especificación de ubicación de archivos estáticos
-
-
 ## Authors
 
 * **Zayra Gutierrez**

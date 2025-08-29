@@ -3,26 +3,32 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package co.edu.escuelaing.httpserver;
-
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- *
- * @author luisdanielbenavidesnavarro
- */
 public class HttpRequest {
+    URI requestUri;
+    HttpRequest(URI reqUri) {
+        requestUri = reqUri;
+    }
     
-    URI requri = null;
-
-    HttpRequest(URI requri) {
-        this.requri = requri;
+    public String getValue(String paramName){
+        String query = requestUri.getQuery();
+        if (query == null){
+            return "";
+        }
+        String[] queryParams = query.split("&");
+        Map<String, String> queryParam = new HashMap<>();
+        for (String param : queryParams){
+            String[] nameValue = param.split("=");
+            if (nameValue.length == 1){
+                queryParam.put(nameValue[0], "");
+            }
+            else {
+                queryParam.put(nameValue[0], nameValue[1]);
+            }
+        }
+        return queryParam.get(paramName) != null ? queryParam.get(paramName) : "";
     }
-
-    public String getValue(String paramName) {
-        
-        //Extrae el valor de paramName desde el query.
-        String paramValue = requri.getQuery().split("=")[1]; //Ejemplo: /app/hello?name=jhon
-        return paramValue;
-    }
-
 }

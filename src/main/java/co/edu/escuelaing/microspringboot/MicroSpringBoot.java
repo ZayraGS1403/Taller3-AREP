@@ -6,14 +6,9 @@ import co.edu.escuelaing.httpserver.HttpServer;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-/**
- *
- * @author luisdanielbenavidesnavarro
- */
 public class MicroSpringBoot {
-
     public static void main(String[] args) throws IOException, URISyntaxException, IllegalAccessException {
         System.out.println("Start micro spring boot");
-        HttpServer.runServer(args);
+        HttpServer.startServer(args);
     }
 }
